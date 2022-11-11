@@ -1,0 +1,5 @@
+app:
+  poi-api:      "https://itrip.meituan.com/volga/api/v3/trip/poi/basic/info/%(poiId)s?poiId=%(poiId)s"
+  poi:
+    - 1545467
+    - 27096
