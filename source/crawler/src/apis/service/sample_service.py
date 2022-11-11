@@ -8,29 +8,29 @@ from fastapi import Response, status
 
 from src.configuration import Page
 from src.apis.model import AssertResponse, SampleBo, SampleVo
-from src.apis.repository.mapper.sample_mapper import SampleMapper
+from src.apis.cell.sample_cell import SampleCell
 
 
 class SampleService(object):
-    __sample_mapper: SampleMapper
+    __sample_cell: SampleCell
 
     def __init__(self):
-        self.__sample_mapper = SampleMapper()
+        self.__sample_cell = SampleCell()
 
     def creation(self, _item: SampleBo, response: Response) -> AssertResponse:
-        _result: int = self.__sample_mapper.creation(_item)
-        return AssertResponse(_result > 0)
+        _result: bool = self.__sample_cell.creation(_item)
+        return AssertResponse(_result)
 
     def deletion(self, _id: int, response: Response) -> AssertResponse:
-        _result: int = self.__sample_mapper.deletion(_id)
-        return AssertResponse(_result > 0)
+        _result: bool = self.__sample_cell.deletion(_id)
+        return AssertResponse(_result)
 
     def modify(self, _item: SampleBo, response: Response) -> AssertResponse:
-        _result: int = self.__sample_mapper.modify(_item)
-        return AssertResponse(_result > 0)
+        _result: bool = self.__sample_cell.modify(_item)
+        return AssertResponse(_result)
 
     def detail(self, _id: int, response: Response) -> Optional[SampleVo]:
-        data: SampleVo = self.__sample_mapper.detail(_id)
+        data: SampleVo = self.__sample_cell.detail(_id)
         if data is not None:
             return data
         else:
@@ -38,4 +38,4 @@ class SampleService(object):
             return None
 
     def page(self, keyword: str, page_num: int, page_size: int, response: Response) -> Page:
-        return self.__sample_mapper.page(keyword, page_num, page_size)
+        return self.__sample_cell.page(keyword, page_num, page_size)
