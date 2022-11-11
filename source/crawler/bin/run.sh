@@ -1,4 +1,3 @@
-# vi run-hive-metastore.sh
 #!/bin/bash
 SERV_NAME=application
 #PID  代表是PID文件
