@@ -1,0 +1,194 @@
+-- 私募基金服务机构信息表
+DROP TABLE IF EXISTS AMAC_PFSA_INFO;
+CREATE TABLE AMAC_PFSA_INFO
+(
+    ID         VARCHAR(32) COMMENT '机构ID',
+    ORG_NM     VARCHAR(150) COMMENT '机构名称',
+    FIL_NO     VARCHAR(10) COMMENT '备案编号',
+    FIL_DATE   DATE COMMENT '备案时间',
+    REG_ADR_DE VARCHAR(500) COMMENT '注册地址',
+    PRIMARY KEY (ID)
+);
+ALTER TABLE AMAC_PFSA_INFO
+    COMMENT ='私募基金服务机构信息表';
+
+-- 机构详细信息表
+DROP TABLE IF EXISTS AMAC_FUND_ORG_INFO;
+CREATE TABLE AMAC_FUND_ORG_INFO
+(
+    ID            VARCHAR(32) COMMENT '表主键',
+    F_M_NM_CN     VARCHAR(150) COMMENT '基金管理人全称(中文)',
+    F_M_NM_EN     VARCHAR(150) COMMENT '基金管理人全称(英文)',
+    REG_NO        VARCHAR(20) COMMENT '登记编号',
+    ORG_CD        VARCHAR(50) COMMENT '组织机构代码',
+    REG_DATE      DATE COMMENT '登记时间',
+    EST_DATE      DATE COMMENT '成立时间',
+    REG_ADR_DE    VARCHAR(500) COMMENT '注册地址',
+    OFF_ADR_DE    VARCHAR(500) COMMENT '办公地址',
+    SC            DECIMAL COMMENT '注册资本(万元)(人民币)',
+    PIC           DECIMAL COMMENT '实缴资本(万元)(人民币)',
+    SP_RATE       VARCHAR(10) COMMENT '注册资本实缴比例',
+    COM_NAT       VARCHAR(50) COMMENT '企业性质',
+    ORG_TYPE      VARCHAR(150) COMMENT '机构类型',
+    BUSI_TYPE     VARCHAR(150) COMMENT '业务类型',
+    EMP_NUM       INTEGER COMMENT '全职员工人数',
+    HAS_FUN_NUM   INTEGER COMMENT '取得基金从业人数',
+    ORG_URL       VARCHAR(50) COMMENT '机构网址',
+    MANA_SC_RAN   VARCHAR(50) COMMENT '管理规模区间',
+    LAST_TIEM     DATE COMMENT '机构信息最后更新时间',
+    IS_MEB        VARCHAR(10) COMMENT '是否为会员 0:否 1:是',
+    MEB_REP       VARCHAR(50) COMMENT '会员代表',
+    MEB_TYPE      VARCHAR(50) COMMENT '当前会员类型',
+    MEB_DATE      DATE COMMENT '入会时间',
+    LE_OP_STU     VARCHAR(50) COMMENT '法律意见书状态',
+    LAW_FM_NM     VARCHAR(150) COMMENT '律师事务所名称',
+    LAW_NM        VARCHAR(100) COMMENT '律师姓名',
+    ACT_CTR_NM    VARCHAR(150) COMMENT '实际控制人姓名 / 名称',
+    OPNE_RATE     VARCHAR(10) COMMENT '私募基金信息披露备份系统投资者查询账号开立率',
+    UNI_SOCIAL_CD VARCHAR(50) COMMENT '统一社会信用代码',
+    PRIMARY KEY (ID)
+);
+ALTER TABLE AMAC_FUND_ORG_INFO
+    COMMENT ='机构详细信息表';
+
+-- 高管信息表
+DROP TABLE IF EXISTS AMAC_FUND_MANA_INFO;
+CREATE TABLE AMAC_FUND_MANA_INFO
+(
+    ID      VARCHAR(32) COMMENT '表主键',
+    ORG_ID  VARCHAR(32) COMMENT '机构表主键',
+    POST    VARCHAR(100) COMMENT '职务',
+    NAME    VARCHAR(50) COMMENT '姓名',
+    HAS_OCR VARCHAR(10) COMMENT '是否有基金从业资格 0:否 1:是',
+    OCR_WAY VARCHAR(50) COMMENT '资格获取方式',
+    PRIMARY KEY (ID)
+);
+ALTER TABLE AMAC_FUND_MANA_INFO
+    COMMENT ='高管信息表';
+
+-- 高管工作履历表
+DROP TABLE IF EXISTS AMAC_MANA_WORK_EXP;
+CREATE TABLE AMAC_MANA_WORK_EXP
+(
+    ID        VARCHAR(32) COMMENT '表主键',
+    MANA_ID   VARCHAR(32) COMMENT '高管信息表主键',
+    WORK_DATE VARCHAR(20) COMMENT '时间',
+    WORK_ORG  VARCHAR(150) COMMENT '任职单位',
+    WORK_DEPT VARCHAR(150) COMMENT '任职部门',
+    POST      VARCHAR(100) COMMENT '职务',
+    PRIMARY KEY (ID)
+);
+ALTER TABLE AMAC_MANA_WORK_EXP
+    COMMENT ='高管工作履历表';
+
+-- 机构诚信信息表
+DROP TABLE IF EXISTS AMAC_ORG_SIN_TIP;
+CREATE TABLE AMAC_ORG_SIN_TIP
+(
+    ID       VARCHAR(32) COMMENT '表主键',
+    ORG_ID   VARCHAR(32) COMMENT '机构表主键',
+    ORG_TITL VARCHAR(150) COMMENT '机构诚信信息关键信息',
+    ORG_DEC  VARCHAR(2000) COMMENT '机构诚信信息详细信息',
+    TYPE     CHAR(1) COMMENT '0:机构诚信信息 1:机构提示信息',
+    PRIMARY KEY (ID)
+);
+ALTER TABLE AMAC_ORG_SIN_TIP
+    COMMENT ='机构诚信信息表';
+
+-- 关联方信息（仅包含关联私募基金管理人）
+DROP TABLE IF EXISTS AMAC_RELA_INFO;
+CREATE TABLE AMAC_RELA_INFO
+(
+    ID        VARCHAR(32) COMMENT '表主键',
+    ORG_ID    VARCHAR(32) COMMENT '机构表主键',
+    RELA_TYPE VARCHAR(150) COMMENT '类型',
+    RELA_NM   VARCHAR(150) COMMENT '名称',
+    REG_NO    VARCHAR(20) COMMENT '登记编号',
+    ORG_CD    VARCHAR(50) COMMENT '组织机构代码',
+    PRIMARY KEY (ID)
+);
+ALTER TABLE AMAC_RELA_INFO
+    COMMENT ='关联方信息（仅包含关联私募基金管理人）';
+
+-- 出资人信息
+DROP TABLE IF EXISTS AMAC_BUYER_INFO;
+CREATE TABLE AMAC_BUYER_INFO
+(
+    ID       VARCHAR(32) COMMENT '表主键',
+    ORG_ID   VARCHAR(32) COMMENT '机构表主键',
+    BUY_NM   VARCHAR(150) COMMENT '姓名/名称',
+    BUY_RATE VARCHAR(10) COMMENT '认缴比例',
+    PRIMARY KEY (ID)
+);
+ALTER TABLE AMAC_BUYER_INFO
+    COMMENT ='出资人信息';
+
+-- 产品信息
+DROP TABLE IF EXISTS AMAC_PROD_INFO;
+CREATE TABLE AMAC_PROD_INFO
+(
+    ID        VARCHAR(32) COMMENT '表主键',
+    ORG_ID    VARCHAR(32) COMMENT '机构表主键',
+    PROD_NM   VARCHAR(500) COMMENT '名称',
+    MON_REPO  VARCHAR(100) COMMENT '当月月报',
+    QUA_REPO  VARCHAR(100) COMMENT '季报',
+    SEM_REPO  VARCHAR(100) COMMENT '半年报',
+    YEAR_REPO VARCHAR(100) COMMENT '年报',
+    OPEN_RATE VARCHAR(10) COMMENT '投资者查询账号开立率',
+    TYPE      CHAR(1) COMMENT '0:暂行办法实施前成立的基金 1:暂行办法实施后成立的基金 2:投资顾问类产品',
+    PRIMARY KEY (ID)
+);
+ALTER TABLE AMAC_PROD_INFO
+    COMMENT ='产品信息';
+
+-- 已注销私募基金管理人公详情信息
+DROP TABLE IF EXISTS AMAC_CANCEL_DETAIL_INFO;
+CREATE TABLE AMAC_CANCEL_DETAIL_INFO
+(
+    ID         VARCHAR(32) COMMENT '机构ID',
+    CNL_DATE   DATE COMMENT '注销时间',
+    CNL_TYPE   VARCHAR(50) COMMENT '注销类型',
+    CNL_REASON VARCHAR(500) COMMENT '注销原因',
+    PRIMARY KEY (ID)
+);
+ALTER TABLE AMAC_CANCEL_DETAIL_INFO
+    COMMENT ='已注销私募基金管理人公详情信息';
+
+-- 已注销私募基金产品信息
+DROP TABLE IF EXISTS AMAC_CANCEL_PROD_INFO;
+CREATE TABLE AMAC_CANCEL_PROD_INFO
+(
+    ID            VARCHAR(32) COMMENT '机构ID',
+    FILED_FUND_NM VARCHAR(500) COMMENT '曾备案基金名称',
+    REG_DATE      DATE COMMENT '工商成立时间',
+    FILED_DATE    DATE COMMENT '曾备案时间',
+    FUND_TYPE     VARCHAR(100) COMMENT '基金类型',
+    CUST_NM       VARCHAR(150) COMMENT '托管人名称',
+    TYPE          CHAR(1) COMMENT '0:注销时已清算产品列表 1:注销时未在系统提交清算的产品',
+    PRIMARY KEY (ID)
+);
+ALTER TABLE AMAC_CANCEL_PROD_INFO
+    COMMENT ='已注销私募基金产品信息';
+
+-- 私募基金服务机构详情表
+DROP TABLE IF EXISTS AMAC_PFSA_DETAIL;
+CREATE TABLE AMAC_PFSA_DETAIL
+(
+    ID            VARCHAR(32) COMMENT '机构ID',
+    ORG_NM        VARCHAR(150) COMMENT '机构名称',
+    ORG_CD        VARCHAR(50) COMMENT '机构代码',
+    FIL_NO        VARCHAR(10) COMMENT '备案编号',
+    ORG_TYPE      VARCHAR(150) COMMENT '机构类型',
+    ORG_URL       VARCHAR(50) COMMENT '公司网址 ',
+    REG_ADR_DE    VARCHAR(500) COMMENT '注册地址',
+    OFF_ADR_DE    VARCHAR(500) COMMENT '办公地址',
+    CORP          VARCHAR(50) COMMENT '法定代表人/执行事务合伙人',
+    SERVE_TYPE    VARCHAR(100) COMMENT '服务类型 ',
+    SERV_FIL_DATE DATE COMMENT '本服务备案时间',
+    TEAM_NUM      INTEGER COMMENT '服务部门/团队人员数量',
+    HAS_FUND_NUM  INTEGER COMMENT '含基金从业人员数量',
+    REMARKS       VARCHAR(2000) COMMENT '备注',
+    PRIMARY KEY (ID)
+);
+ALTER TABLE AMAC_PFSA_DETAIL
+    COMMENT ='私募基金服务机构详情表';

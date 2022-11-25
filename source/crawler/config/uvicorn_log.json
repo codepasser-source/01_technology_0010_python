@@ -1,0 +1,75 @@
+{
+  "version": 1,
+  "disable_existing_loggers": false,
+  "formatters": {
+    "fmt_default": {
+      "()": "uvicorn.logging.DefaultFormatter",
+      "fmt": "[%(asctime)s] - [%(threadName)10s] - [%(filename)25s] (line:%(lineno)4d) - [%(levelname)7s]: %(message)s",
+      "use_colors": null
+    },
+    "fmt_access": {
+      "()": "uvicorn.logging.AccessFormatter",
+      "fmt": "[%(asctime)s] - [%(levelname)s]: [%(client_addr)s] - ['%(request_line)s' %(status_code)s]"
+    }
+  },
+  "handlers": {
+    "hl_console": {
+      "formatter": "fmt_default",
+      "class": "logging.StreamHandler",
+      "stream": "ext://sys.stdout"
+    },
+    "hl_system": {
+      "formatter": "fmt_default",
+      "class": "logging.handlers.TimedRotatingFileHandler",
+      "filename": "../logs/system.log"
+    },
+    "hl_file": {
+      "formatter": "fmt_default",
+      "class": "logging.handlers.TimedRotatingFileHandler",
+      "filename": "../logs/uvicorn.log"
+    },
+    "hl_access": {
+      "formatter": "fmt_access",
+      "class": "logging.handlers.TimedRotatingFileHandler",
+      "filename": "../logs/uvicorn_access.log"
+    },
+    "hl_access_console": {
+      "formatter": "fmt_access",
+      "class": "logging.StreamHandler",
+      "stream": "ext://sys.stdout"
+    }
+  },
+  "loggers": {
+    "console": {
+      "handlers": [
+        "hl_console"
+      ],
+      "level": "DEBUG"
+    },
+    "system": {
+      "handlers": [
+        "hl_system",
+        "hl_console"
+      ],
+      "level": "INFO"
+    },
+    "uvicorn": {
+      "handlers": [
+        "hl_file",
+        "hl_console"
+      ],
+      "level": "INFO"
+    },
+    "uvicorn.error": {
+      "level": "INFO"
+    },
+    "uvicorn.access": {
+      "handlers": [
+        "hl_access",
+        "hl_access_console"
+      ],
+      "level": "INFO",
+      "propagate": false
+    }
+  }
+}
