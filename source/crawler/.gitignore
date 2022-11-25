@@ -1,9 +1,0 @@
-.idea/*
-*.iml
-dist
-build
-venv/*
-setup.py
-logs/*
-.eggs
-bin/*.pid
