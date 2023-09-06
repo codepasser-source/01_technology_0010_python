@@ -1,0 +1,9 @@
+.idea/*
+*.iml
+dist
+setup.py
+logs/*
+.eggs
+bin/*.pid
+.venv/*
+venv/*
