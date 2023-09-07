@@ -15,7 +15,7 @@ from apis.service.sample_service import SampleService
 class AppSampleRouter:
     __router: APIRouter = None
 
-    # 注意加载时机，__init__ 重复执行2次 @TODO
+    # 注意加载时机，__init__ 重复执行2次
     __sample_service: SampleService = SampleService()
 
     # 定义构造方法

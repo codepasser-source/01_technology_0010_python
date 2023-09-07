@@ -13,23 +13,23 @@ CONSOLE_LOGGER = ConfigLogger.console_log()
 
 
 class Page(BaseModel):
-    page_size: int = None
-    page_num: int = None
+    size: int = None
+    page: int = None
     total: int = None
-    list: list = None
+    data: list = []
 
-    def __init__(self, page_size: int = None, page_num: int = None, total: int = None, list: list = None):
+    def __init__(self, size: int = None, page: int = None, total: int = None, data: list = None):
         super().__init__()
-        self.page_size = page_size
-        self.page_num = page_num
+        self.size = size
+        self.page = page
         self.total = total
-        self.list = list
+        self.data = data
 
 
 class RowBound(object):
-    def __init__(self, page_num: int, page_size: int):
-        self.page_num = page_num
-        self.page_size = page_size
+    def __init__(self, page: int, size: int):
+        self.page = page
+        self.size = size
 
 
 """
@@ -76,8 +76,8 @@ class SqlTemplate(object):
         with self.get_connection(con) as connection:
             cursor = connection.cursor()
             page_result = Page()
-            page_result.page_num = row_bound.page_num
-            page_result.page_size = row_bound.page_size
+            page_result.page = row_bound.page
+            page_result.size = row_bound.size
             if count_sql is None:
                 count_sql = count_query(sql)
                 CONSOLE_LOGGER.debug('[SQL:({})] - [ARGS:({})]'.format(count_sql, args))
@@ -93,7 +93,7 @@ class SqlTemplate(object):
             CONSOLE_LOGGER.debug('[SQL:({})] - [ARGS:({})]'.format(sql, args))
             # print('[SQL:({})] - [ARGS:({})]'.format(sql, args))
             cursor.execute(sql, args)
-            page_result.list = cursor.fetchall()
+            page_result.data = cursor.fetchall()
             cursor.close()
         return page_result
 
@@ -158,8 +158,8 @@ def count_query(sql: str):
 
 
 def limit_query(sql: str, row_bound: RowBound):
-    start = (row_bound.page_num - 1) * row_bound.page_size
-    return sql + ' limit {},{}'.format(start, row_bound.page_size)
+    start = (row_bound.page - 1) * row_bound.size
+    return sql + ' limit {},{}'.format(start, row_bound.size)
 
 
 def get_one_value(count_dict: dict):

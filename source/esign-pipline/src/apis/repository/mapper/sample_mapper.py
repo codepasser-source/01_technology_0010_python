@@ -52,6 +52,6 @@ class SampleMapper:
         page_data: Page = self.sql_mapper.select_page(
             sql_id,
             params=params,
-            row_bound=RowBound(page_num=page, page_size=size)
+            row_bound=RowBound(page=page, size=size)
         )
         return page_data

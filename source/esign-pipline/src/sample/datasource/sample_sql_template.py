@@ -61,7 +61,7 @@ class SampleSqlTemplate:
         print(
             self.sql_template.select_list(
                 sql='select * from sample where id in (%s,%s,%s)',
-                row_bound=RowBound(page_num=1, page_size=2),
+                row_bound=RowBound(page=1, size=2),
                 args=(1, 2, 3)
             )
         )
@@ -80,7 +80,7 @@ class SampleSqlTemplate:
         print('============{}============'.format('select_page'))
         page_data: Page = self.sql_template.select_page(
             sql='select * from sample',
-            row_bound=RowBound(page_num=1, page_size=2)
+            row_bound=RowBound(page=1, size=2)
         )
         print(page_data.page_num)
         print(page_data.page_size)

@@ -5,7 +5,7 @@
 from typing import Optional
 from fastapi import HTTPException
 
-from src.configuration import ConfigLogger
+from src.configuration import ConfigLogger, Page
 from src.apis.model import AssertResponse, SampleBo, SampleVo
 from src.apis.repository.mapper.sample_mapper import SampleMapper
 
@@ -23,7 +23,7 @@ class SampleService(object):
         self.sample_mapper.creation(_item)
         return AssertResponse()
 
-    def deletion(self, _id: int):
+    def deletion(self, _id: int) -> AssertResponse:
         CONSOLE_LOGGER.info(_id)
         count: int = self.sample_mapper.deletion(_id)
         if count == 0:
@@ -31,7 +31,7 @@ class SampleService(object):
 
         return AssertResponse()
 
-    def modify(self, _item: SampleBo):
+    def modify(self, _item: SampleBo) -> AssertResponse:
         CONSOLE_LOGGER.info(_item)
         count: int = self.sample_mapper.modify(_item)
         if count == 0:
@@ -53,6 +53,6 @@ class SampleService(object):
             setattr(vo, key, value)
         return vo
 
-    def page(self, keyword: str, page: int, size: int):
+    def page(self, keyword: str, page: int, size: int) -> Page:
         CONSOLE_LOGGER.info('page_num:{} page_size{}'.format(page, size))
         return self.sample_mapper.page(keyword, page, size)

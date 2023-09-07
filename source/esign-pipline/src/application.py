@@ -17,7 +17,8 @@ from src.variables import BANNER_TXT_PATH, CONFIG_LOG_JSON_PATH
 from src.configuration import ConfigAppIni
 from src.common import File
 from src.app_router import AppRouter
-from src.app_sample_router import AppSampleRouter
+from src.app_router_sample import AppSampleRouter
+from src.app_router_pipline import AppPiplineRouter
 
 api = FastAPI(
     title='Swagger API 文档',
@@ -32,6 +33,9 @@ api.include_router(router=AppRouter().config())
 
 # Application Sample Router
 api.include_router(router=AppSampleRouter().config())
+
+# Application Pipline Router
+api.include_router(router=AppPiplineRouter().config())
 
 if __name__ == '__main__':
     host = ConfigAppIni().get('server', 'host')
