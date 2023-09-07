@@ -67,9 +67,9 @@ class AppSampleRouter:
                     status_code=200)
         async def sample_page(
                 keyword: Optional[str] = Query(None, description="keyword"),
-                page_num: int = Query(1, description="page_num"),
-                page_size: int = Query(10, description="page_size")):
-            return self.__sample_service.page(keyword, page_num, page_size)
+                page: int = Query(1, description="page"),
+                size: int = Query(10, description="size")):
+            return self.__sample_service.page(keyword, page, size)
 
     def config(self):
         return self.__router

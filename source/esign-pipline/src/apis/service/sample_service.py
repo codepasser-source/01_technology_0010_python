@@ -3,71 +3,56 @@
 # author: codepasser
 # date: 2022/9/21
 from typing import Optional
-
 from fastapi import HTTPException
-from src.configuration import ConfigLogger, SqlMapper, SqlTemplate, RowBound, Page
+
+from src.configuration import ConfigLogger
 from src.apis.model import AssertResponse, SampleBo, SampleVo
+from src.apis.repository.mapper.sample_mapper import SampleMapper
 
 CONSOLE_LOGGER = ConfigLogger.console_log()
 
 
 class SampleService(object):
-    sql_template: SqlTemplate
-
-    sql_mapper: SqlMapper
+    sample_mapper: SampleMapper
 
     def __init__(self):
-        self.sql_template = SqlTemplate()
-        self.sql_mapper = SqlMapper()
+        self.sample_mapper = SampleMapper();
 
-    def creation(self, _item: SampleBo):
+    def creation(self, _item: SampleBo) -> AssertResponse:
         CONSOLE_LOGGER.info(_item)
-        sql_id = ('%(namespace)s.%(id)s' % {'namespace': 'NS_MAPPER_SAMPLE', 'id': 'SAMPLE_SERVICE_CREATION'})
-        self.sql_mapper.insert(sql_id, params=dict(_item))
+        self.sample_mapper.creation(_item)
         return AssertResponse()
 
     def deletion(self, _id: int):
         CONSOLE_LOGGER.info(_id)
-        sql_id = ('%(namespace)s.%(id)s' % {'namespace': 'NS_MAPPER_SAMPLE', 'id': 'SAMPLE_SERVICE_DELETION'})
-        count = self.sql_mapper.delete(sql_id, params={"id": _id})
-        if count == 1:
-            return AssertResponse()
-        else:
+        count: int = self.sample_mapper.deletion(_id)
+        if count == 0:
             raise HTTPException(status_code=404, detail="data not found")
+
+        return AssertResponse()
 
     def modify(self, _item: SampleBo):
         CONSOLE_LOGGER.info(_item)
-        sql_id = ('%(namespace)s.%(id)s' % {'namespace': 'NS_MAPPER_SAMPLE', 'id': 'SAMPLE_SERVICE_UPDATE'})
-        count = self.sql_mapper.update(sql_id, params=dict(_item))
-        if count == 1:
-            return AssertResponse()
-        else:
+        count: int = self.sample_mapper.modify(_item)
+        if count == 0:
             raise HTTPException(status_code=404, detail="data not found")
+
+        return AssertResponse()
 
     def detail(self, _id: int) -> Optional[SampleVo]:
         CONSOLE_LOGGER.info(_id)
-        sql_id = ('%(namespace)s.%(id)s' % {'namespace': 'NS_MAPPER_SAMPLE', 'id': 'SAMPLE_SERVICE_DETAIL'})
-        params = {'id': _id}
-        data = self.sql_mapper.select_one(sql_id, params=params)
-        if data:
-            data.update({'create_time': data.pop('create_time').strftime("%Y-%m-%d %H:%M:%S")})
-            data.update({'update_time': data.pop('update_time').strftime("%Y-%m-%d %H:%M:%S")})
-            vo: SampleVo = SampleVo()
-            for key, value in data.items():
-                setattr(vo, key, value)
-            return vo
-        else:
+        data = self.sample_mapper.detail(_id)
+        if data is None:
             raise HTTPException(status_code=404, detail="data not found")
 
-    def page(self, keyword: str, page_num: int, page_size: int):
-        CONSOLE_LOGGER.info('page_num:{} page_size{}'.format(page_num, page_size))
-        sql_id = ('%(namespace)s.%(id)s' % {'namespace': 'NS_MAPPER_SAMPLE', 'id': 'SAMPLE_SERVICE_PAGE'})
-        params = {}
-        if keyword:
-            params = {'keyword': keyword}
-        page_data: Page = self.sql_mapper.select_page(
-            sql_id,
-            params=params,
-            row_bound=RowBound(page_num=page_num, page_size=page_size)
-        )
-        return page_data
+        data.update({'create_time': data.pop('create_time').strftime("%Y-%m-%d %H:%M:%S")})
+        data.update({'update_time': data.pop('update_time').strftime("%Y-%m-%d %H:%M:%S")})
+
+        vo: SampleVo = SampleVo()
+        for key, value in data.items():
+            setattr(vo, key, value)
+        return vo
+
+    def page(self, keyword: str, page: int, size: int):
+        CONSOLE_LOGGER.info('page_num:{} page_size{}'.format(page, size))
+        return self.sample_mapper.page(keyword, page, size)
