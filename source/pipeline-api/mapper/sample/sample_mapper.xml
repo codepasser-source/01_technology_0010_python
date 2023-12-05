@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="NS_MAPPER_SAMPLE">
+
+    <!--  SAMPLE_BASIC -->
+    <select id="SAMPLE_BASIC">
+        SELECT id, name, age
+        FROM sample
+        WHERE 1=1
+        AND <![CDATA[ age < ${age,sql_type=TINYINT} ]]>
+    </select>
+
+
+    <!-- SAMPLE_INCLUDE -->
+    <sql id="_include_select">
+        SELECT id, name, age
+    </sql>
+    <sql id="_include_from">
+        FROM sample
+    </sql>
+    <sql id="_include_where">
+        WHERE 1=1
+        AND <![CDATA[ age < ${age,sql_type=TINYINT} ]]>
+    </sql>
+    <select id="SAMPLE_INCLUDE">
+        <include refid="_include_select"/>
+        <include refid="_include_from"/>
+        <include refid="_include_where"/>
+    </select>
+
+
+    <!-- SAMPLE_LOGIC_IF -->
+    <select id="SAMPLE_LOGIC_IF">
+        SELECT id, name, age
+        FROM sample
+        WHERE 1=1
+        <if test="'age' in params">
+            AND <![CDATA[ age < ${age,sql_type=TINYINT} ]]>
+            <if test="0 > params['age']">
+                AND age > 0
+            </if>
+        </if>
+    </select>
+
+    <!-- SAMPLE_LOGIC_CHOOSE -->
+    <select id="SAMPLE_LOGIC_CHOOSE">
+        SELECT id, name, age
+        FROM sample
+        <where>
+            <choose>
+                <when test="'name' in params">
+                    AND name = #{name}
+                </when>
+                <when test="'age' in params">
+                    AND <![CDATA[ age < ${age,sql_type=TINYINT} ]]>
+                    <if test="0 > params['age']">
+                        AND age > 0
+                    </if>
+                </when>
+                <otherwise>
+                    AND name is not null
+                </otherwise>
+            </choose>
+        </where>
+    </select>
+
+    <!-- SAMPLE_LOGIC_FOREACH -->
+    <select id="SAMPLE_LOGIC_FOREACH">
+        SELECT id, name, age
+        FROM sample
+        <where>
+            <if test="'names' in params">
+                name in
+                <foreach collection="names" item="name" open="(" close=")" separator=",">
+                    #{name}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+    <!-- SAMPLE_TRIM -->
+    <select id="SAMPLE_TRIM">
+        SELECT id, name, age
+        FROM sample
+        <trim prefix="WHERE" prefixOverrides="OR">
+            OR name = '乐乐'
+            OR age = 3
+        </trim>
+        <trim prefix="AND" prefixOverrides="OR">
+            (age = 1 OR age = 0)
+        </trim>
+    </select>
+
+    <!-- SAMPLE_WHERE -->
+    <select id="SAMPLE_WHERE">
+        SELECT id, name, age
+        FROM sample
+        <where>
+            AND name = '乐乐'
+            <if test="'age' in params ">
+                AND age = ${age}
+            </if>
+        </where>
+    </select>
+
+    <!-- SAMPLE_LIKE -->
+    <select id="SAMPLE_LIKE">
+        SELECT id, name, age
+        FROM sample
+        <where>
+            <if test="'name' in params ">
+                <bind name="like_name" value="'%{}%'.format(params['name'])"/>
+                name like #{like_name}
+            </if>
+        </where>
+    </select>
+
+    <!-- SAMPLE_FUNCTION -->
+    <select id="SAMPLE_FUNCTION">
+        SELECT id, name, age
+        FROM sample
+        <where>
+            1=1
+            <if test="'name' in params ">
+                and name like $f{like(params['name'])}
+            </if>
+            <if test="'create_time' in params ">
+                and <![CDATA[ create_time < $f{time_format(params['create_time'])} ]]>
+            </if>
+        </where>
+    </select>
+
+    <!-- SAMPLE_INSERT -->
+    <insert id="SAMPLE_INSERT">
+        insert into sample(name,age) values(#{name},#{age})
+    </insert>
+
+    <!-- SAMPLE_INSERT_MULTI -->
+    <insert id="SAMPLE_INSERT_MULTI">
+        INSERT INTO sample(name,age,update_time)
+        VALUES
+        <foreach collection="items" item="item" separator=",">
+            (
+            #{item['name']},
+            #{item['age']},
+            $f{time_format(item['update_time'])}
+            )
+        </foreach>
+    </insert>
+
+    <!-- SAMPLE_UPDATE -->
+    <update id="SAMPLE_UPDATE">
+        UPDATE sample
+        <set>
+            <if test="'age' in params">
+                age = #{age},
+            </if>
+        </set>
+        <where>
+            <if test="'name' in params ">
+                and name like $f{like(params['name'])}
+            </if>
+        </where>
+    </update>
+
+    <!-- SAMPLE_DELETE -->
+    <delete id="SAMPLE_DELETE">
+        delete from sample where id = #{id}
+    </delete>
+
+
+    <!-- SAMPLE_SERVICE_CREATION -->
+    <insert id="SAMPLE_SERVICE_CREATION">
+        insert into sample(name,age) values(#{name},#{age})
+    </insert>
+
+    <!-- SAMPLE_DELETE -->
+    <delete id="SAMPLE_SERVICE_DELETION">
+        delete from sample where id = #{id}
+    </delete>
+
+    <!-- SAMPLE_SERVICE_UPDATE -->
+    <update id="SAMPLE_SERVICE_UPDATE">
+        UPDATE sample
+        <set>
+            <if test="'name' in params">
+                name = #{name},
+            </if>
+            <if test="'age' in params">
+                age = #{age},
+            </if>
+        </set>
+        <where>
+            and id = #{id}
+        </where>
+    </update>
+
+    <select id="SAMPLE_SERVICE_DETAIL">
+        SELECT id, name, age, create_time, update_time
+        FROM sample
+        <where>
+            <if test="'id' in params">
+                id = #{id}
+            </if>
+        </where>
+    </select>
+
+    <select id="SAMPLE_SERVICE_PAGE">
+        SELECT id, name, age,create_time, update_time
+        FROM sample
+        <where>
+            <if test="'keyword' in params">
+                and name like $f{like(params['keyword'])}
+            </if>
+        </where>
+        order by age asc, create_time desc
+    </select>
+</mapper>
